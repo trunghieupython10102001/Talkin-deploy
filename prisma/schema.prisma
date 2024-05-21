@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int     @id @default(autoincrement())
+  email          String  @unique @db.VarChar(255)
+  password       String  @db.VarChar(255)
+  firstname      String  @db.VarChar(255)
+  lastname       String  @db.VarChar(255)
+  fullname       String  @default("") @db.VarChar(255)
+  birthday       String? @db.VarChar(255)
+  gender         String? @db.VarChar(255)
+  phone          String? @db.VarChar(255)
+  address        String? @db.VarChar(255)
+  avatar         String? @db.VarChar(255)
+  description    String? @db.Text
+  wallet         String? @db.VarChar(50)
+  balance        String? @db.VarChar(50)
+  creatorOfRooms Room[]
+  transactions   Transaction[]
+
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @default(now()) @updatedAt @map("updated_at")
+  LivestreamRoom LivestreamRoom[]
+
+  @@map("user")
+}
+
+model Room {
+  id            String    @id @default(uuid())
+  name          String?   @db.VarChar(255)
+  startTime     DateTime  @default(now()) @map("start_time")
+  description   String?   @db.Text
+  invitedEmails String[]  @default([]) @map("invited_emails")
+  endTime       DateTime? @map("end_time")
+  type          String    @default("public") @db.VarChar(255)
+  status        String    @default("open") @db.VarChar(255)
+  creator       User      @relation(fields: [creatorId], references: [id])
+  creatorId     Int       @map("creator_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("room")
+}
+
+model LivestreamRoom {
+  id            String    @id @default(uuid())
+  name          String    @db.VarChar(255)
+  realStartTime DateTime? @map("real_start_time")
+  startTime     DateTime  @default(now()) @map("start_time")
+  description   String?   @db.Text
+  creator       User      @relation(fields: [creatorId], references: [id])
+  creatorId     Int       @map("creator_id")
+  listCategory  String[]  @default([]) @map("list_category")
+  thumbnail     String?
+  liveThumbnail String?   @map("live_thumbnail")
+  status        String    @default("coming_soon") // live/ coming_soon/ end	
+  invitedEmails String[]  @default([]) @map("invited_emails")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("livestream_room ")
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String?  @unique @db.VarChar(255)
+  status    String   @default("active") //	active/ inactive			
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("category")
+}
+
+model Transaction {
+  id        String   @id @default(uuid())
+  amount    String   @db.VarChar(50)
+  direction String   @db.VarChar(20) // withdraw / deposit
+  note      String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @map("user_id")
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Gaming",
+    "status": "active"
+  },
+  {
+    "name": "Music",
+    "status": "active"
+  },
+  {
+    "name": "Talkshow",
+    "status": "active"
+  },
+  {
+    "name": "Wellness",
+    "status": "active"
+  },
+  {
+    "name": "Cooking",
+    "status": "active"
+  },
+  {
+    "name": "DIY",
+    "status": "active"
+  },
+  {
+    "name": "Education",
+    "status": "active"
+  },
+  {
+    "name": "Beauty",
+    "status": "active"
+  },
+  {
+    "name": "Travel",
+    "status": "active"
+  },
+  {
+    "name": "Entertainment",
+    "status": "active"
+  }
+]

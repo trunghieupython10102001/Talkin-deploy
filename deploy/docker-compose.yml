@@ -1,0 +1,43 @@
+version: "3.3"
+services:
+  app:
+    env_file:
+      - .env
+    build:
+      context: ../
+      dockerfile: ./deploy/Dockerfile
+    ports:
+      - "${PORT}:${PORT}"
+      - "10000-10100:10000-10100/udp" # RTC ports range for sending and receiving media
+      - "44444-44447:44444-44447/udp" # worker listen ports (3 workers)
+      - "44444-44447:44444-44447/tcp"
+    depends_on:
+      - db
+    volumes:
+      - streamcall-db-records:/service/records
+      - streamcall-db-images:/service/uploads
+    networks:
+      - streamcall
+  db:
+    image: postgres
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - streamcall-db-data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    networks:
+      - streamcall
+
+networks:
+  streamcall:
+    external: false
+
+volumes:
+  streamcall-db-data:
+  streamcall-db-images:
+  streamcall-db-records:
